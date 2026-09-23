@@ -33,5 +33,5 @@ class ResUsers(models.Model):
             enabled_roles = self._get_enabled_roles()
             if enabled_roles:
                 groups = enabled_roles.mapped("role_id.group_id")
-                return frozenset(groups._ids)
+                return groups._ids
         return super()._get_group_ids()
