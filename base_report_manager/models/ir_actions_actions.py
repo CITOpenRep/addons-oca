@@ -11,7 +11,7 @@ class IrActionsActions(models.Model):
     def get_bindings(self, model_name):
         """Filter out restricted reports from print sidebar and bindings."""
         result = super().get_bindings(model_name)
-        if self.env.is_superuser():
+        if self.env.su:
             return result
         if "report" in result:
             report_ids = list(map(lambda rep: rep.get("id"), result["report"]))

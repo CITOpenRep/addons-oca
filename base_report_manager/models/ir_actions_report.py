@@ -1,7 +1,7 @@
 # Copyright 2026 CIT Services
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, models
+from odoo import models
 from odoo.exceptions import AccessError
 
 
@@ -13,7 +13,7 @@ class IrActionsReport(models.Model):
         taking group privilege inheritance into account.
         """
         self.ensure_one()
-        if self.env.is_superuser():
+        if self.env.su:
             return False
 
         user_groups = self.env.user.sudo().groups_id
@@ -24,7 +24,7 @@ class IrActionsReport(models.Model):
         for action in self:
             if action._is_action_report_restricted():
                 raise AccessError(
-                    _(
+                    self.env._(
                         "You are not allowed to access this action because it "
                         "is restricted for one of your user groups."
                     )
