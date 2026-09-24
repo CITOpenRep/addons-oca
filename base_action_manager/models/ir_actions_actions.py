@@ -1,7 +1,7 @@
 # Copyright 2026 CIT Services
 # License AGPL-3.0 or later (https://www.gnu.org/licenses/agpl).
 
-from odoo import _, api, models
+from odoo import api, models
 from odoo.exceptions import AccessError
 
 
@@ -13,7 +13,7 @@ class IrActionsActions(models.Model):
         taking group privilege inheritance into account.
         """
         self.ensure_one()
-        if self.env.is_superuser():
+        if self.env.su:
             return False
 
         action_sudo = self.sudo()
@@ -34,7 +34,7 @@ class IrActionsActions(models.Model):
         for action in self:
             if action._is_action_action_restricted():
                 raise AccessError(
-                    _(
+                    self.env._(
                         "You are not allowed to access this action because it "
                         "is restricted for one of your user groups."
                     )
@@ -49,7 +49,7 @@ class IrActionsActions(models.Model):
     def get_bindings(self, model_name):
         """Filter out restricted actions from sidebars and bindings."""
         result = super().get_bindings(model_name)
-        if self.env.is_superuser():
+        if self.env.su:
             return result
 
         for key in ("action", "report"):

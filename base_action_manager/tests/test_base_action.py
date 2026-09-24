@@ -17,11 +17,13 @@ class TestBaseAction(TransactionCase):
             ("res_users", "notification_type"),
         ]
         for table, column in polluted_columns:
-            cls.env.cr.execute(f"""
+            cls.env.cr.execute(
+                f"""
                 SELECT column_name
                 FROM information_schema.columns
                 WHERE table_name='{table}' AND column_name='{column}'
-            """)
+            """
+            )
             if cls.env.cr.fetchone():
                 cls.env.cr.execute(
                     f"ALTER TABLE {table} ALTER COLUMN {column} DROP NOT NULL"
